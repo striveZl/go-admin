@@ -13,7 +13,11 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 	"go.uber.org/zap"
+
+	_ "go-admin/docs"
 )
 
 func startHTTPServer(ctx context.Context, injector *wirex.Injector) (func(), error) {
@@ -24,6 +28,8 @@ func startHTTPServer(ctx context.Context, injector *wirex.Injector) (func(), err
 	}
 
 	e := gin.New()
+
+	e.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	e.GET("/health", func(c *gin.Context) {
 		util.ResOK(c)

@@ -2,8 +2,9 @@ package mods
 
 import (
 	"context"
-	"github.com/gin-gonic/gin"
 	"go-admin/internal/mods/rbac"
+
+	"github.com/gin-gonic/gin"
 )
 
 const apiPrefix = "/api/"

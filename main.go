@@ -11,6 +11,10 @@ import (
 
 var VERSION = "1.0.0"
 
+// @title Go Admin API
+// @version 1.0
+// @description API documentation for the go-admin project.
+// @BasePath /
 func main() {
 	ctx := context.Background()
 
