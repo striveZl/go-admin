@@ -17,6 +17,13 @@ func NewLogin(loginBIZ *biz.Login) *Login {
 }
 
 // 验证码
+// @Summary Get captcha id
+// @Description Returns a captcha identifier for the login flow.
+// @Tags RBAC
+// @Produce json
+// @Success 200 {object} schema.CaptchaResponse
+// @Failure 500 {object} schema.ErrorResponse
+// @Router /api/v1/captcha/id [get]
 func (a *Login) GetCaptcha(c *gin.Context) {
 	if a == nil || a.loginBIZ == nil {
 		util.ResError(c, errors.InternalServerError("", "login biz is not initialized"))
