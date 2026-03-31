@@ -9,8 +9,24 @@ import (
 type Config struct {
 	Logger     logging.LoggerConfig
 	General    General
+	Database   Database
 	Util       Util
 	Middleware Middleware
+}
+
+
+type Database struct {
+	Driver          string `default:"postgres"`
+	Host            string `default:"127.0.0.1"`
+	Port            int    `default:"5432"`
+	User            string `default:"go_admin"`
+	Password        string
+	DBName          string
+	SSLMode         string `default:"disable"`
+	Timezone        string `default:"Asia/Shanghai"`
+	MaxIdleConns    int    `default:"10"`
+	MaxOpenConns    int    `default:"100"`
+	ConnMaxLifetime int    `default:"3600"` // seconds
 }
 
 type General struct {
@@ -20,7 +36,7 @@ type General struct {
 	DisablePrintConfig bool
 	Debug              bool
 	HTTP               struct {
-		Addr            string `default:":8040"`
+		Addr            string `default:":3000"`
 		ShutdownTimeout int    `default:"10"` // seconds
 		ReadTimeout     int    `default:"60"` // seconds
 		WriteTimeout    int    `default:"60"` // seconds

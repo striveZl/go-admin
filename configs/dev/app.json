@@ -1,1 +1,15 @@
-{}
+{
+  "Database": {
+    "Driver": "postgres",
+    "Host": "127.0.0.1",
+    "Port": 5432,
+    "User": "strive",
+    "Password": "123456",
+    "DBName": "go_admin",
+    "SSLMode": "disable",
+    "Timezone": "Asia/Shanghai",
+    "MaxIdleConns": 10,
+    "MaxOpenConns": 100,
+    "ConnMaxLifetime": 3600
+  }
+}

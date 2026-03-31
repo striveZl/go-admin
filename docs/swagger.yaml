@@ -30,6 +30,28 @@ definitions:
       success:
         type: boolean
     type: object
+  schema.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      nickname:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  schema.UserResponse:
+    properties:
+      data:
+        $ref: '#/definitions/schema.User'
+      success:
+        type: boolean
+    type: object
 info:
   contact: {}
   description: API documentation for the go-admin project.
@@ -38,7 +60,7 @@ info:
 paths:
   /api/v1/captcha/id:
     get:
-      description: Returns a captcha identifier for the login flow.
+      description: 返回登录流程所需的验证码标识。
       produces:
       - application/json
       responses:
@@ -50,7 +72,38 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/schema.ErrorResponse'
-      summary: Get captcha id
+      summary: 获取验证码 ID
+      tags:
+      - RBAC
+  /api/v1/users/{id}:
+    get:
+      description: 根据主键从 users 表中返回一条用户记录。
+      parameters:
+      - description: 用户 ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/schema.UserResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/schema.ErrorResponse'
+      summary: 按 ID 获取用户
       tags:
       - RBAC
 swagger: "2.0"

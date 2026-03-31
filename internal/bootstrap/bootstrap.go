@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"go-admin/internal/config"
+	"go-admin/internal/db"
 	"go-admin/internal/wirex"
 	"go-admin/pkg/logging"
 	"go-admin/pkg/util"
@@ -60,8 +61,14 @@ func Run(ctx context.Context, runCfg RunConfig) error {
 		zap.String("static", staticDir),
 	)
 
-	injector, cleanInjectorFn, err := wirex.BuildInjector(ctx)
+	dbStore, err := db.Open(ctx, config.C.Database)
 	if err != nil {
+		return err
+	}
+
+	injector, cleanInjectorFn, err := wirex.BuildInjector(ctx, dbStore.Gorm())
+	if err != nil {
+		_ = dbStore.Close()
 		return err
 	}
 
@@ -71,6 +78,7 @@ func Run(ctx context.Context, runCfg RunConfig) error {
 	return util.Run(ctx, func(ctx context.Context) (func(), error) {
 		httpServerCleanFn, err := startHTTPServer(ctx, injector)
 		if err != nil {
+			_ = dbStore.Close()
 			return cleanInjectorFn, err
 		}
 
@@ -79,6 +87,10 @@ func Run(ctx context.Context, runCfg RunConfig) error {
 
 			if err := injector.M.Release(ctx); err != nil {
 				logging.Context(ctx).Error("failed to release injector", zap.Error(err))
+			}
+
+			if err := dbStore.Close(); err != nil {
+				logging.Context(ctx).Error("failed to close database", zap.Error(err))
 			}
 
 			cleanInjectorFn()
