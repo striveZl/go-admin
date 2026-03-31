@@ -17,8 +17,8 @@ func NewLogin(loginBIZ *biz.Login) *Login {
 }
 
 // 验证码
-// @Summary Get captcha id
-// @Description Returns a captcha identifier for the login flow.
+// @Summary 获取验证码 ID
+// @Description 返回登录流程所需的验证码标识。
 // @Tags RBAC
 // @Produce json
 // @Success 200 {object} schema.CaptchaResponse

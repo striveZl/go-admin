@@ -11,17 +11,24 @@ import (
 type RBAC struct {
 	Casbinx  *Casbinx
 	LoginAPI *api.Login
+	UserAPI  *api.User
 }
 
 func (a *RBAC) RegisterV1Routers(_ context.Context, v1 *gin.RouterGroup) error {
-	if a == nil || a.LoginAPI == nil {
-		return fmt.Errorf("login api is not initialized")
+	if a == nil || a.LoginAPI == nil || a.UserAPI == nil {
+		return fmt.Errorf("rbac apis are not initialized")
 	}
 
 	captcha := v1.Group("captcha")
 	{
 		captcha.GET("id", a.LoginAPI.GetCaptcha)
 		// captcha.GET("image", a.LoginAPI.ResponseCaptcha)
+	}
+
+	users := v1.Group("users")
+	
+	{
+		users.GET("/:id", a.UserAPI.GetByID)
 	}
 
 	return nil
