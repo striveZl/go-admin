@@ -23,6 +23,7 @@ func main() {
 		Version: VERSION,
 		Usage:   "A Go admin project for beginners.",
 		Commands: []*cli.Command{
+			cmd.MigrateCmd(),
 			cmd.StartCmd(),
 		},
 	}
