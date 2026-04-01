@@ -1,7 +1,15 @@
-### 启动服务
+### docker
 
-`go run main.go start`
+启动应用：
 
+```console
+docker compose up --build app
+```
+执行迁移：
+
+```console
+make migrate
+```
 ### swagger
 
 ```console

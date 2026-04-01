@@ -1,0 +1,20 @@
+{
+  "Database": {
+    "Driver": "postgres",
+    "Host": "pg",
+    "Port": 5432,
+    "User": "strive",
+    "Password": "123456",
+    "DBName": "go_admin",
+    "SSLMode": "disable",
+    "Timezone": "Asia/Shanghai",
+    "MaxIdleConns": 10,
+    "MaxOpenConns": 100,
+    "ConnMaxLifetime": 3600
+  },
+  "General": {
+    "HTTP": {
+      "Addr": ":3000"
+    }
+  }
+}
