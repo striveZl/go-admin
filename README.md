@@ -5,11 +5,13 @@
 ```console
 docker compose up --build app
 ```
+
 执行迁移：
 
 ```console
 make migrate
 ```
+
 ### swagger
 
 ```console

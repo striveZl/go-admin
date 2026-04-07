@@ -2,7 +2,6 @@ package bootstrap
 
 import (
 	"context"
-	"crypto/tls"
 	"go-admin/internal/config"
 	"go-admin/internal/wirex"
 	"go-admin/pkg/errors"
@@ -63,20 +62,18 @@ func startHTTPServer(ctx context.Context, injector *wirex.Injector) (func(), err
 		IdleTimeout:       time.Second * time.Duration(config.C.General.HTTP.IdleTimeout),
 	}
 
+	// 不需要在项目中配置https
+	
 	go func() {
 		var err error
-		//如果配置了证书和私钥就用https否则就用http
-		if config.C.General.HTTP.CertFile != "" && config.C.General.HTTP.KeyFile != "" {
-			srv.TLSConfig = &tls.Config{MinVersion: tls.VersionTLS12}
-			err = srv.ListenAndServeTLS(config.C.General.HTTP.CertFile, config.C.General.HTTP.KeyFile)
-		} else {
-			err = srv.ListenAndServe()
-		}
+
+		err = srv.ListenAndServe()
 
 		if err != nil && err != http.ErrServerClosed {
 			logging.Context(ctx).Error("Failed to listen http server", zap.Error(err))
 		}
 	}()
+
 	return func() {
 		ctx, cancel := context.WithTimeout(ctx, time.Second*time.Duration(config.C.General.HTTP.ShutdownTimeout))
 		defer cancel()
