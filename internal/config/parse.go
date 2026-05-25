@@ -2,12 +2,13 @@ package config
 
 import (
 	"encoding/json"
-	"github.com/creasty/defaults"
 	"go-admin/pkg/errors"
 	"go-admin/pkg/toml"
 	"os"
 	"path/filepath"
 	"sync"
+
+	"github.com/creasty/defaults"
 )
 
 var (

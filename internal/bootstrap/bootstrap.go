@@ -66,9 +66,15 @@ func Run(ctx context.Context, runCfg RunConfig) error {
 		return err
 	}
 
-	injector, cleanInjectorFn, err := wirex.BuildInjector(ctx, dbStore.Gorm())
+	redisClient, err := db.OpenRedis(ctx, config.C.Redis)
+	if err != nil {
+		return err
+	}
+
+	injector, cleanInjectorFn, err := wirex.BuildInjector(ctx, dbStore.Gorm(), redisClient)
 	if err != nil {
 		_ = dbStore.Close()
+		_ = redisClient.Close()
 		return err
 	}
 
@@ -79,9 +85,11 @@ func Run(ctx context.Context, runCfg RunConfig) error {
 		httpServerCleanFn, err := startHTTPServer(ctx, injector)
 		if err != nil {
 			_ = dbStore.Close()
+			_ = redisClient.Close()
 			return cleanInjectorFn, err
 		}
 
+		// 退出程序后关闭数据库，redis的链接
 		return func() {
 			httpServerCleanFn()
 
@@ -91,6 +99,10 @@ func Run(ctx context.Context, runCfg RunConfig) error {
 
 			if err := dbStore.Close(); err != nil {
 				logging.Context(ctx).Error("failed to close database", zap.Error(err))
+			}
+
+			if err := redisClient.Close(); err != nil {
+				logging.Context(ctx).Error("failed to close redis", zap.Error(err))
 			}
 
 			cleanInjectorFn()

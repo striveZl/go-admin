@@ -2,12 +2,15 @@ package wirex
 
 import (
 	"context"
+	"go-admin/internal/config"
 	"go-admin/internal/mods"
 	rbac2 "go-admin/internal/mods/rbac"
 	"go-admin/internal/mods/rbac/api"
 	"go-admin/internal/mods/rbac/biz"
 	"go-admin/internal/mods/rbac/dal"
+	"go-admin/pkg/email"
 
+	"github.com/go-redis/redis/v8"
 	"gorm.io/gorm"
 )
 
@@ -15,24 +18,27 @@ type Mods struct {
 	RBAC *rbac2.RBAC
 }
 
-func BuildInjector(_ context.Context, db *gorm.DB) (*Injector, func(), error) {
+func BuildInjector(_ context.Context, db *gorm.DB, redisClient *redis.Client) (*Injector, func(), error) {
+
 	injector := &Injector{
 		M: &mods.Mods{},
 	}
 	clearFn := func() {}
 
 	casbinx := &rbac2.Casbinx{}
-	loginBiz := &biz.Login{}
-	loginAPI := api.NewLogin(loginBiz)
-	userDAL := dal.NewUserDAL(db)
-	userBiz := biz.NewUser(userDAL)
-	userAPI := api.NewUser(userBiz)
+
+	emailSender := email.NewSMTPSender(
+		config.C.Email.EmailApiKey,
+		config.C.Email.From,
+	)
+
+	registerDAL := dal.NewRegister(db)
+	registerBiz := biz.NewRegister(registerDAL, redisClient, config.C.Secret.CaptchaSecret, emailSender)
+	registerApi := api.NewRegister(registerBiz)
 
 	rbacRBAC := &rbac2.RBAC{
-
-		Casbinx:  casbinx,
-		LoginAPI: loginAPI,
-		UserAPI:  userAPI,
+		Casbinx:     casbinx,
+		RegisterApi: registerApi,
 	}
 
 	modsMods := &mods.Mods{

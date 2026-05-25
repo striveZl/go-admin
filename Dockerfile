@@ -24,4 +24,4 @@ USER appuser
 EXPOSE 3000
 
 ENTRYPOINT ["/app/goadmin"]
-CMD ["start", "-d", "/app/configs", "-c", "docker"]
+CMD ["start", "-d", "/app/configs", "-c", "dev"]

@@ -9,26 +9,19 @@ import (
 )
 
 type RBAC struct {
-	Casbinx  *Casbinx
-	LoginAPI *api.Login
-	UserAPI  *api.User
+	Casbinx     *Casbinx
+	RegisterApi *api.Register
 }
 
 func (a *RBAC) RegisterV1Routers(_ context.Context, v1 *gin.RouterGroup) error {
-	if a == nil || a.LoginAPI == nil || a.UserAPI == nil {
+	if a == nil {
 		return fmt.Errorf("rbac apis are not initialized")
 	}
 
-	captcha := v1.Group("captcha")
+	register := v1.Group("register")
 	{
-		captcha.GET("id", a.LoginAPI.GetCaptcha)
-		// captcha.GET("image", a.LoginAPI.ResponseCaptcha)
-	}
-
-	users := v1.Group("users")
-	
-	{
-		users.GET("/:id", a.UserAPI.GetByID)
+		register.POST("captcha", a.RegisterApi.PostCaptcha)
+		register.POST("create", a.RegisterApi.PostRegister)
 	}
 
 	return nil

@@ -1,0 +1,24 @@
+[Database]
+Driver = ""
+Host = ""
+Port = 0
+User = ""
+Password = ""
+DBName = ""
+SSLMode = ""
+Timezone = ""
+MaxIdleConns = 10
+MaxOpenConns = 100
+ConnMaxLifetime = 3600
+
+[General.HTTP]
+Addr = ""
+
+[Redis]
+Addr = ""
+Password = ""
+DB = 0
+
+[Email]
+EmailApiKey = ""
+From = ""
