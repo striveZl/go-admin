@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"go-admin/internal/mods/rbac/biz"
 	"go-admin/internal/mods/rbac/schema"
 	"go-admin/pkg/errors"
@@ -51,8 +50,6 @@ func (register *Register) PostCaptcha(c *gin.Context) {
 	var req schema.CaptchaRequest
 
 	if err := c.ShouldBind(&req); err != nil {
-		fmt.Println("邮箱:", err)
-		fmt.Println("传入参数", req)
 		util.ResError(c, errors.BadRequest("", "params error : %v", err), 400)
 		return
 	}
