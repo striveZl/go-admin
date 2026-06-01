@@ -3,8 +3,9 @@ package errors
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/pkg/errors"
 	"net/http"
+
+	"github.com/pkg/errors"
 )
 
 var (
@@ -93,5 +94,17 @@ func NotFound(id, format string, a ...interface{}) error {
 		Code:   http.StatusNotFound,
 		Detail: fmt.Sprintf(format, a...),
 		Status: http.StatusText(http.StatusNotFound),
+	}
+}
+
+func BadRequest(id, format string, a ...interface{}) error {
+	if id == "" {
+		id = "bad_request"
+	}
+	return &Error{
+		ID:     id,
+		Code:   http.StatusBadRequest,
+		Detail: fmt.Sprintf(format, a...),
+		Status: http.StatusText(http.StatusBadRequest),
 	}
 }

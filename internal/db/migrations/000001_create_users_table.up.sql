@@ -1,11 +1,15 @@
+CREATE TYPE gender_type AS ENUM ('male', 'female', 'other');
+
 CREATE TABLE IF NOT EXISTS users (
     id BIGSERIAL PRIMARY KEY,
-    username TEXT NOT NULL,
+    email TEXT UNIQUE,
     nickname TEXT NOT NULL,
-    email TEXT NOT NULL,
+    password_hash TEXT,
+    gender gender_type,
+    birth DATE,
+    avatar TEXT,
+    phone TEXT,
+    deleted_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users (email);
-CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users (username);

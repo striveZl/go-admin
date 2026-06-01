@@ -10,10 +10,11 @@ type Config struct {
 	Logger     logging.LoggerConfig
 	General    General
 	Database   Database
-	Util       Util
+	Redis      Redis
+	Email      Email
 	Middleware Middleware
+	Secret     Secret
 }
-
 
 type Database struct {
 	Driver          string `default:"postgres"`
@@ -27,6 +28,15 @@ type Database struct {
 	MaxIdleConns    int    `default:"10"`
 	MaxOpenConns    int    `default:"100"`
 	ConnMaxLifetime int    `default:"3600"` // seconds
+}
+
+type Email struct {
+	EmailApiKey string
+	From        string
+}
+
+type Secret struct {
+	CaptchaSecret string `default:""`
 }
 
 type General struct {
@@ -46,13 +56,10 @@ type General struct {
 	}
 }
 
-type Util struct {
-	Captcha struct {
-		Length    int    `default:"4"`
-		Width     int    `default:"400"`
-		Height    int    `default:"160"`
-		CacheType string `default:"memory"`
-	}
+type Redis struct {
+	Addr     string `default:"127.0.0.1:6379"`
+	Password string
+	DB       int `default:"0"`
 }
 
 func (c *Config) IsDebug() bool {

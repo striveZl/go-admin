@@ -3,11 +3,12 @@ package util
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"go-admin/pkg/errors"
 	"go-admin/pkg/logging"
-	"go.uber.org/zap"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 func ResOK(c *gin.Context) {
@@ -45,7 +46,12 @@ func ResError(c *gin.Context, err error, status ...int) {
 	} else {
 		ierr = errors.FromError(errors.InternalServerError("", "%s", err.Error()))
 	}
+
 	code := http.StatusInternalServerError
+	if err, ok := errors.As(err); ok {
+		code = int(err.Code)
+	}
+
 	if len(status) > 0 {
 		code = status[0]
 	}

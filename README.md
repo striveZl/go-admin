@@ -3,13 +3,13 @@
 启动应用：
 
 ```console
-docker compose up --build app
+make app-build
 ```
 
 执行迁移：
 
 ```console
-make migrate
+make migrate-docker
 ```
 
 ### swagger
