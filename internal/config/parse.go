@@ -1,13 +1,12 @@
 package config
 
 import (
-	"encoding/json"
 	"go-admin/pkg/errors"
-	"go-admin/pkg/toml"
 	"os"
 	"path/filepath"
 	"sync"
 
+	"github.com/BurntSushi/toml"
 	"github.com/creasty/defaults"
 )
 
@@ -24,9 +23,7 @@ func MustLoad(dir string, names ...string) {
 	})
 }
 
-// 从目录中加载各种格式的配置文件，并将它们解析为
-
-// 结构体。
+// 从目录中加载 TOML 配置文件，并将它们解析为结构体。
 func Load(dir string, names ...string) error {
 	// Set default values
 	if err := defaults.Set(C); err != nil {
@@ -34,7 +31,6 @@ func Load(dir string, names ...string) error {
 	}
 
 	supportExts := map[string]struct{}{
-		".json": {},
 		".toml": {},
 	}
 	parseFile := func(name string) error {
@@ -48,12 +44,7 @@ func Load(dir string, names ...string) error {
 			return errors.Wrapf(err, "failed to read config file %s", name)
 		}
 
-		switch ext {
-		case ".json":
-			err = json.Unmarshal(buf, C)
-		case ".toml":
-			err = toml.Unmarshal(buf, C)
-		}
+		err = toml.Unmarshal(buf, C)
 		return errors.Wrapf(err, "failed to unmarshal config %s", name)
 	}
 
