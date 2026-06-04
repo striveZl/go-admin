@@ -32,13 +32,19 @@ func BuildInjector(_ context.Context, db *gorm.DB, redisClient *redis.Client) (*
 		config.C.Email.From,
 	)
 
+	userDAL := dal.NewUser(db)
+
+	captchaBIZ := biz.NewCaptcha(userDAL, redisClient, emailSender, config.C.Secret.CaptchaSecret)
+	captchaAPI := api.NewCaptcha(captchaBIZ)
+
 	registerDAL := dal.NewRegister(db)
-	registerBiz := biz.NewRegister(registerDAL, redisClient, config.C.Secret.CaptchaSecret, emailSender)
-	registerApi := api.NewRegister(registerBiz)
+	registerBIZ := biz.NewRegister(registerDAL, userDAL, captchaBIZ)
+	registerAPI := api.NewRegister(registerBIZ)
 
 	rbacRBAC := &rbac2.RBAC{
 		Casbinx:     casbinx,
-		RegisterApi: registerApi,
+		RegisterAPI: registerAPI,
+		CaptchaAPI:  captchaAPI,
 	}
 
 	modsMods := &mods.Mods{
