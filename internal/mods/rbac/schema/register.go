@@ -28,11 +28,3 @@ type RegisterResponse struct {
 	Success bool       `json:"success"`
 	Data    RegisterID `json:"data"`
 }
-
-type CaptchaRequest struct {
-	Email string `json:"email" form:"email" binding:"required,email"`
-}
-
-type Captcha struct {
-	ExpireSeconds int `json:"expire_seconds"`
-}

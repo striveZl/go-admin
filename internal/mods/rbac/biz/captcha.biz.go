@@ -10,6 +10,7 @@ import (
 	"go-admin/internal/mods/rbac/schema"
 	"go-admin/pkg/errors"
 	"math/big"
+	"time"
 
 	"github.com/go-redis/redis/v8"
 )
@@ -35,9 +36,15 @@ func NewCaptcha(userDAl *dal.UserDAL, redisClient *redis.Client, emailSender Ema
 	}
 }
 
+// 频率
+const captchaCoolDown = time.Second * 60
+
+// 验证码过期时间
+const captchaTTL = time.Minute * 5
+
 // 验证码发送
-func (captchaBIZ *CaptchaBIZ) Captcha(ctx context.Context, req *schema.CaptchaRequest) (*schema.Captcha, error) {
-	if captchaBIZ == nil || captchaBIZ.userDAl == nil {
+func (captchaBIZ *CaptchaBIZ) Captcha(ctx context.Context, req *schema.CaptchaRequest) (*schema.CaptchaResponse, error) {
+	if captchaBIZ == nil || captchaBIZ.userDAl == nil || captchaBIZ.redisClient == nil || captchaBIZ.emailSender == nil {
 		return nil, errors.InternalServerError("", "Captcha dal is not initialized")
 	}
 
@@ -70,7 +77,7 @@ func (captchaBIZ *CaptchaBIZ) Captcha(ctx context.Context, req *schema.CaptchaRe
 		return nil, errors.InternalServerError("", "send captcha email: %v", err)
 	}
 
-	return &schema.Captcha{
+	return &schema.CaptchaResponse{
 		ExpireSeconds: int(captchaTTL.Seconds()),
 	}, nil
 
