@@ -9,53 +9,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Register struct {
+type RegisterAPI struct {
 	registerBIZ *biz.RegisterBIZ
 }
 
-func NewRegister(registerBIZ *biz.RegisterBIZ) *Register {
-	return &Register{registerBIZ: registerBIZ}
+func NewRegister(registerBIZ *biz.RegisterBIZ) *RegisterAPI {
+	return &RegisterAPI{registerBIZ: registerBIZ}
 }
 
-func (register *Register) PostRegister(c *gin.Context) {
-	if register == nil || register.registerBIZ == nil {
+func (registerAPI *RegisterAPI) PostRegister(c *gin.Context) {
+
+	if registerAPI == nil || registerAPI.registerBIZ == nil {
 		util.ResError(c, errors.InternalServerError("", "register biz is not initialized"))
 		return
 	}
 
 	var req schema.RegisterRequest
-
 	if err := c.ShouldBind(&req); err != nil {
 		util.ResError(c, errors.BadRequest("", "invalid register params"), 400)
 		return
 	}
 
-	data, err := register.registerBIZ.Register(c.Request.Context(), &req)
-
-	if err != nil {
-		util.ResError(c, err)
-		return
-	}
-
-	util.ResSuccess(c, data)
-
-}
-
-func (register *Register) PostCaptcha(c *gin.Context) {
-	if register == nil || register.registerBIZ == nil {
-		util.ResError(c, errors.InternalServerError("", "Captcha biz is not initialized"))
-		return
-	}
-
-	var req schema.CaptchaRequest
-
-	if err := c.ShouldBind(&req); err != nil {
-		util.ResError(c, errors.BadRequest("", "params error : %v", err), 400)
-		return
-	}
-
-	data, err := register.registerBIZ.Captcha(c.Request.Context(), &req)
-
+	data, err := registerAPI.registerBIZ.Register(c.Request.Context(), &req)
 	if err != nil {
 		util.ResError(c, err)
 		return

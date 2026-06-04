@@ -10,7 +10,8 @@ import (
 
 type RBAC struct {
 	Casbinx     *Casbinx
-	RegisterApi *api.Register
+	RegisterAPI *api.RegisterAPI
+	CaptchaAPI  *api.CaptchaAPI
 }
 
 func (a *RBAC) RegisterV1Routers(_ context.Context, v1 *gin.RouterGroup) error {
@@ -20,8 +21,12 @@ func (a *RBAC) RegisterV1Routers(_ context.Context, v1 *gin.RouterGroup) error {
 
 	register := v1.Group("register")
 	{
-		register.POST("captcha", a.RegisterApi.PostCaptcha)
-		register.POST("create", a.RegisterApi.PostRegister)
+		register.POST("create", a.RegisterAPI.PostRegister)
+	}
+
+	captcha := v1.Group("captcha")
+	{
+		captcha.POST("email", a.CaptchaAPI.PostEmailCaptcha)
 	}
 
 	return nil
