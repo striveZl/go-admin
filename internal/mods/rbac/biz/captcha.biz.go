@@ -48,7 +48,7 @@ func (captchaBIZ *CaptchaBIZ) Captcha(ctx context.Context, req *schema.CaptchaRe
 		return nil, errors.InternalServerError("", "Captcha dal is not initialized")
 	}
 
-	existsByEmail, err := captchaBIZ.userDAl.ExistsByEmail(ctx, req.Email)
+	existsByEmail, err := captchaBIZ.userDAl.ExistsByAuthEmail(ctx, req.Email)
 
 	if err != nil {
 		return nil, errors.InternalServerError("", "Email:%v", err)

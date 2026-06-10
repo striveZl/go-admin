@@ -6,7 +6,6 @@ import (
 	"go-admin/internal/mods/rbac/schema"
 	"go-admin/pkg/errors"
 	"go-admin/pkg/util"
-	"time"
 )
 
 type RegisterBIZ struct {
@@ -25,7 +24,7 @@ func (registerBIZ *RegisterBIZ) Register(ctx context.Context, req *schema.Regist
 		return nil, errors.InternalServerError("", "register dal is not initialized")
 	}
 
-	existsByUserAccount, err := registerBIZ.userDAL.ExistsByEmail(ctx, req.Email)
+	existsByUserAccount, err := registerBIZ.userDAL.ExistsByAuthEmail(ctx, req.Email)
 
 	if err != nil {
 		return nil, errors.InternalServerError("", "Email:%v", err)
@@ -47,14 +46,10 @@ func (registerBIZ *RegisterBIZ) Register(ctx context.Context, req *schema.Regist
 		return nil, errors.InternalServerError("", "hash password:%v", err)
 	}
 
-	now := time.Now()
-
-	user := &schema.RegisterUser{
+	user := &schema.User{
 		Nickname:     req.Nickname,
-		PasswordHash: passwordHash,
-		Email:        req.Email,
-		CreatedAt:    now,
-		UpdatedAt:    now,
+		PasswordHash: &passwordHash,
+		Email:        &req.Email,
 	}
 
 	registerId, err := registerBIZ.registerDAL.RegisterCreate(ctx, user)

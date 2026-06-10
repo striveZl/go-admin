@@ -1,1 +1,2 @@
 DROP TABLE IF EXISTS user_auth;
+DROP TYPE IF EXISTS auth_type;
