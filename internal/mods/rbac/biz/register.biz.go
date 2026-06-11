@@ -47,12 +47,11 @@ func (registerBIZ *RegisterBIZ) Register(ctx context.Context, req *schema.Regist
 	}
 
 	user := &schema.User{
-		Nickname:     req.Nickname,
-		PasswordHash: &passwordHash,
-		Email:        &req.Email,
+		Nickname: req.Nickname,
+		Email:    &req.Email,
 	}
 
-	registerId, err := registerBIZ.registerDAL.RegisterCreate(ctx, user)
+	registerId, err := registerBIZ.registerDAL.RegisterCreate(ctx, user, &passwordHash)
 
 	if err != nil {
 		return nil, err
